@@ -21,7 +21,7 @@ class AppSecurity
             if (self::fileExistsAndReadOnly($configPath)) {
                 Session::setSessionVariable(self::BOOTCHECK, "OK");
             } else {
-                AppError::halt("The config file '$configPath' does not have the correct filepermissions (r-x------) !", 500, $e->getMessage());
+                AppError::halt("The config file '$configPath' does not have the correct filepermissions (r-x------) !", 500);
             }
         }
     }
