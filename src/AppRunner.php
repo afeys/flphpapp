@@ -2,8 +2,8 @@
 namespace FL;
 class AppRunner
 {
-    public static function init() {
-        AppConfig::loadConfig();
+    public static function init($configPath) {
+        AppConfig::loadConfig($configPath);
     }
     public static function run() {
         echo "<pre>";
