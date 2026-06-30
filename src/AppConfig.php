@@ -15,7 +15,7 @@ set_include_path(implode(PATH_SEPARATOR, $paths));
 
 class AppConfig
 {
-    // loadConfig will overwrite certain values of the above static variables with info found in a config.php files. This allows for more flexibility in putting this app live.
+    // loadConfig will overwrite certain values of the static variables with info found in a config.php files. This allows for more flexibility in putting this app live.
     // On the server the file config.php has to be read only to avoid being overwritten when all files are ftp'd to the live server
     public static function loadConfig()
     {
@@ -67,6 +67,17 @@ class AppConfig
             }
         }
     }
+
+    public static function getConfig() {
+        $returnvalue = array();
+        $reflection = new ReflectionClass('AppConfig');
+        $staticVars = $reflection->getStaticProperties();
+        foreach ($staticVars as $name => $value) {
+            $returnvalue[$name] = var_export($value, true);
+        }
+        return $returnvalue;
+    }
+
     public static function get($key) {
         if (property_exists(__CLASS__, $key)) {
             return self::$$key;
