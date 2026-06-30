@@ -18,9 +18,9 @@ class AppConfig
     /** All config values live here. config.php overrides/adds entries. */
     private static array $config = array();
 
-
     // loadConfig will overwrite certain values of the static variables with info found in a config.php files. This allows for more flexibility in putting this app live.
     // On the server the file config.php has to be read only to avoid being overwritten when all files are ftp'd to the live server
+
     public static function loadConfig($configPath)
     {
         echo "AppConfig::loadConfig called with $configPath<br>";
