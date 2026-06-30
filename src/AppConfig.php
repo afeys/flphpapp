@@ -15,83 +15,58 @@ set_include_path(implode(PATH_SEPARATOR, $paths));
 
 class AppConfig
 {
+    /** All config values live here. config.php overrides/adds entries. */
+    private static array $config = array();
+
+
     // loadConfig will overwrite certain values of the static variables with info found in a config.php files. This allows for more flexibility in putting this app live.
     // On the server the file config.php has to be read only to avoid being overwritten when all files are ftp'd to the live server
     public static function loadConfig($configPath)
     {
         echo "AppConfig::loadConfig called with $configPath<br>";
         if (file_exists($configPath)) {
-            echo "config.php file exists<br>";
             $config = include $configPath; // Load PHP array config
-echo "<pre>"; print_r($config); echo "</pre>";
             foreach ($config as $key => $value) {
-              //  if (property_exists(__CLASS__, $key)) {
-                    self::$$key = $value; // Dynamically assign properties
-                    echo "$key = $value";
-              //  }
+                self::$config[$key] = $value;
             }
 
             // loading the database connections in the ConnectionManager
-            if (Self::keyExists("DBConnections")) {
-echo "There are dbconnections defined:<br>";
-                // creating the connection manager
+            if (self::keyExists("DBConnections")) {
                 $connmgr = \FL\ConnectionManager::getInstance();
-                $connections = AppConfig::get("DBConnections");
-                foreach ($connections as $name => $conn) {
-                    $host = "";
-                    $user = "";
-                    $pwd = "";
-                    $dbname = "";
-                    if (array_key_exists("host", $conn)) {
-                        $host = $conn["host"];
-                    }
-                    if (array_key_exists("user", $conn)) {
-                        $user = $conn["user"];
-                    }
-                    if (array_key_exists("pwd", $conn)) {
-                        $host = $conn["pwd"];
-                    }
-                    if (array_key_exists("dbname", $conn)) {
-                        $host = $conn["dbname"];
-                    }
+                foreach (self::get("DBConnections") as $name => $conn) {
+                    $host   = $conn["host"]   ?? "";
+                    $user   = $conn["user"]   ?? "";
+                    $pwd    = $conn["pwd"]    ?? "";
+                    $dbname = $conn["dbname"] ?? "";
                     $connmgr->addConnection(
-                            \FL\Connection::getInstance($name, $host, $user, $pwd, $dbname)
-                        );
-                    echo "$name/$host/$user/$pwd/$dbname<br>";
+                        \FL\Connection::getInstance($name, $host, $user, $pwd, $dbname)
+                    );
                 }
             }
 
             // loading the model directories
-            if (Self::keyExists("DBModelDirs")) {
-                echo "There are modeldirs defined<br>";
-                foreach( AppConfig::get("DBModelDirs") as $dir) {
-                    \FL\Model::initialize(array(AppConfig::$BaseDirectory . $dir));
-                    echo AppConfig::$BaseDirectory . $dir . "<br>";
+            if (self::keyExists("DBModelDirs")) {
+                foreach (self::get("DBModelDirs") as $dir) {
+                    \FL\Model::initialize(array(self::get("BaseDirectory") . $dir));
                 }
             }
         }
     }
 
     public static function getConfig() {
-        $returnvalue = array();
-        $reflection = new \ReflectionClass(__CLASS__);
-        $staticVars = $reflection->getStaticProperties();
-        foreach ($staticVars as $name => $value) {
-            $returnvalue[$name] = var_export($value, true);
-        }
-        return $returnvalue;
+        return self::$config;
     }
 
     public static function get($key) {
-        if (property_exists(__CLASS__, $key)) {
-            return self::$$key;
+        if (self::keyExists( $key)) {
+            return self::$config[$key];
         } else {
-            throw new Flappy\ConfigException("Config key $key not found");
+            throw new ConfigException("Config key $key not found");
         }
     }
 
     public static function keyExists($key) {
-        return property_exists(__CLASS__, $key);
+        return array_key_exists($key, self::$config);
     }
 }
 
