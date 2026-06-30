@@ -25,10 +25,10 @@ class AppConfig
             $config = include $configPath; // Load PHP array config
 echo "<pre>"; print_r($config); echo "</pre>";
             foreach ($config as $key => $value) {
-                if (property_exists(__CLASS__, $key)) {
+              //  if (property_exists(__CLASS__, $key)) {
                     self::$$key = $value; // Dynamically assign properties
                     echo "$key = $value";
-                }
+              //  }
             }
 
             // loading the database connections in the ConnectionManager
