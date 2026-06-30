@@ -4,7 +4,8 @@ class AppSecurity
 {
     const BOOTCHECK = "BOOTCHECK";
 
-    public static function fileExistsAndReadOnly($filepath) {
+    public static function fileExistsAndReadOnly($filepath): bool
+    {
         $returnvalue = false;
         if (file_exists($filepath)) {
             $perms = fileperms($filepath) & 0777;
@@ -21,7 +22,7 @@ class AppSecurity
             if (self::fileExistsAndReadOnly($configPath)) {
                 Session::setSessionVariable(self::BOOTCHECK, "OK");
             } else {
-                AppError::halt("The config file '$configPath' does not have the correct filepermissions (r-x------) !", 500);
+                AppError::halt("The config file does not have the correct filepermissions (r-x------) !", 500);
             }
         }
     }

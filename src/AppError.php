@@ -20,7 +20,7 @@ class AppError
         }
 
         // Set the status line *before* any output. headers_sent() guards
-        // against a warning if output already escaped (e.g. a stray echo).
+        // against a warning if output already escaped (e.g., a stray echo).
         if (!headers_sent()) {
             http_response_code($httpCode);
             header('Content-Type: text/html; charset=utf-8');
@@ -68,7 +68,7 @@ HTML;
 </body>
 </html>
 HTML;
-        Log::add($safeMessage . " [Detail:" . $safeDetail . "]", "APPLOG");
+        Log::add($safeMessage . " [Detail:" . $safeDetail . "]", "APP");
         exit;
     }
 }

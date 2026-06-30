@@ -23,7 +23,6 @@ class AppConfig
 
     public static function loadConfig($configPath)
     {
-        echo "AppConfig::loadConfig called with $configPath<br>";
         if (file_exists($configPath)) {
             $config = include $configPath; // Load PHP array config
             foreach ($config as $key => $value) {
