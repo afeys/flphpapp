@@ -19,11 +19,11 @@ class AppConfig
     // On the server the file config.php has to be read only to avoid being overwritten when all files are ftp'd to the live server
     public static function loadConfig($configPath)
     {
-        echo "AppConfig::loadConfig called<br>";
+        echo "AppConfig::loadConfig called with $configPath<br>";
         if (file_exists($configPath)) {
             echo "config.php file exists<br>";
             $config = include $configPath; // Load PHP array config
-
+echo "<pre>"; print_r($config); echo "</pre>";
             foreach ($config as $key => $value) {
                 if (property_exists(__CLASS__, $key)) {
                     self::$$key = $value; // Dynamically assign properties
