@@ -70,7 +70,7 @@ class AppConfig
 
     public static function getConfig() {
         $returnvalue = array();
-        $reflection = new \ReflectionClass('AppConfig');
+        $reflection = new \ReflectionClass(__CLASS__);
         $staticVars = $reflection->getStaticProperties();
         foreach ($staticVars as $name => $value) {
             $returnvalue[$name] = var_export($value, true);
