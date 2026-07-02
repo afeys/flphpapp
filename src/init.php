@@ -4,6 +4,7 @@
 if (!defined('FLPHPAPP_ASSET_URL')) {
     define('FLPHPAPP_ASSET_URL', '/assets/fl');
 }
+$flEntry = 'init.js';
 $flBase = htmlspecialchars(rtrim(FLPHPAPP_ASSET_URL, '/'), ENT_QUOTES);
 
 // URL path -> filesystem path under the docroot.
