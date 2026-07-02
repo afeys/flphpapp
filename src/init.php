@@ -4,6 +4,10 @@ require_once(dirname(__FILE__) . '/AppError.php');
 require_once(dirname(__FILE__) . '/AppSecurity.php');
 require_once(dirname(__FILE__) . '/AppRunner.php');
 ?>
+<script type="module">
+    // load all webcomponents
+    import { FLDatePicker } from '.js/ui/date-picker.js';
+</script>
 <script>
     let tabId = sessionStorage.getItem('tabId');
     if (!tabId) {
