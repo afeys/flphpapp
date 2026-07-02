@@ -32,7 +32,7 @@
     "source": "https://github.com/afeys/flphpapp/"
   },
   "autoload": {
-    "psr-4": { "flphpapp\\": "src/" },
+    "psr-4": { "FL\\": "src/" },
     "files": ["src/init.php"]
   },
   "autoload-dev": {

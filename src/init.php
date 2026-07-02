@@ -1,13 +1,12 @@
 <?php
-require_once(dirname(__FILE__) . '/AppConfig.php');
-require_once(dirname(__FILE__) . '/AppError.php');
-require_once(dirname(__FILE__) . '/AppSecurity.php');
-require_once(dirname(__FILE__) . '/AppRunner.php');
+// Public URL where this package's JS is served.
+// The main project can define this BEFORE including init.php to override it.
+if (!defined('FLPHPAPP_ASSET_URL')) {
+    define('FLPHPAPP_ASSET_URL', '../vendor/afeys/flphpapp/src/js/ui');
+}
+$flBase = htmlspecialchars(rtrim(FLPHPAPP_ASSET_URL, '/'), ENT_QUOTES);
 ?>
-<script type="module">
-    // load all webcomponents
-    import { FLDatePicker } from 'http://localhost:8081/vendor/afeys/flphpapp/src/js/ui/date-picker.js';
-</script>
+<script type="module" src="<?= $flBase ?>/init.js"></script>
 <script>
     let tabId = sessionStorage.getItem('tabId');
     if (!tabId) {
