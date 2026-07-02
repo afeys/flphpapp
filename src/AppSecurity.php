@@ -2,7 +2,8 @@
 namespace FL;
 class AppSecurity
 {
-    const BOOTCHECK = "BOOTCHECK";
+    const BOOTCHECK = "FL_BOOTCHECK";
+    const ASSETCHECK = "FL_ASSETCHECK";
 
     public static function fileExistsAndReadOnly($filepath): bool
     {
@@ -16,15 +17,53 @@ class AppSecurity
 
         return $returnvalue;
     }
-    public static function preBootCheck($configPath) {
-        if (!Session::isSetSessionVariable(AppSecurity::BOOTCHECK)) {
-            // check if the configPath file is readonly and not worldaccessible
-            if (self::fileExistsAndReadOnly($configPath)) {
-                Session::setSessionVariable(self::BOOTCHECK, "OK");
-            } else {
-                AppError::halt("The config file does not have the correct filepermissions (r-x------) !", 500);
-            }
+
+    public static function configPermissionsCheck($configPath) {
+        if (Session::isSetSessionVariable(AppSecurity::BOOTCHECK)) {
+            return;
         }
+        // check if the configPath file is readonly and not worldaccessible
+        if (self::fileExistsAndReadOnly($configPath)) {
+            Session::setSessionVariable(self::BOOTCHECK, "OK");
+        } else {
+            AppError::halt("The config file does not have the correct filepermissions (r-x------) !", 500);
+        }
+    }
+    /**
+     * Verify the published front-end assets are actually reachable under the docroot.
+     * is_file() follows symlinks, so this passes for a symlinked folder OR a copied
+     * folder, and correctly FAILS for a dangling/broken symlink.
+     *
+     * @param string $assetUrlPath URL path where assets are published, e.g. "/assets/fl"
+     * @param string $entryFile    A file that must be present there, e.g. "index.js"
+     */
+    public static function assetPreCheck($assetUrlPath, $entryFile = "init.js") {
+        if (Session::isSetSessionVariable(self::ASSETCHECK)) {
+            return;
+        }
+        $docRoot  = rtrim($_SERVER['DOCUMENT_ROOT'] ?? "", "/");
+        $diskPath = $docRoot . "/" . trim($assetUrlPath, "/") . "/" . ltrim($entryFile, "/");
+
+        if ($docRoot !== "" && is_file($diskPath) && is_readable($diskPath)) {
+            Session::setSessionVariable(self::ASSETCHECK, "OK");
+        } else {
+            AppError::halt(
+                "FL front-end assets are not published. Expected '"
+                . $assetUrlPath . "/" . $entryFile . "' under the document root. "
+                . "Create the link once, e.g.:  ln -s "
+                . "../vendor/afeys/flphpapp/src/js/ui  "
+                . $docRoot . "/" . trim($assetUrlPath, "/"),
+                500
+            );
+        }
+    }
+    public static function preBootCheck($configPath) {
+        AppSecurity::configPermissionsCheck($configPath);
+
+        if (!defined('FLPHPAPP_ASSET_URL')) {
+            define('FLPHPAPP_ASSET_URL', '/assets/fl');
+        }
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL);   // halts with a clear message if missing
     }
 }
 

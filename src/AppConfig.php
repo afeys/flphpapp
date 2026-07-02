@@ -1,5 +1,7 @@
 <?php
 namespace Fl;
+use FL\Exceptions\ConfigException;
+
 set_time_limit(0);
 date_default_timezone_set('Europe/Brussels');
 ini_set('memory_limit', '3072M');

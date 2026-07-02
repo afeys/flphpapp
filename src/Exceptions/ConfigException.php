@@ -1,6 +1,6 @@
 <?php
 
-namespace FL;
+namespace FL\Exceptions;
 
 class ConfigException extends \Exception
 {
