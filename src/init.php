@@ -5,8 +5,17 @@ if (!defined('FLPHPAPP_ASSET_URL')) {
     define('FLPHPAPP_ASSET_URL', '/assets/fl');
 }
 $flBase = htmlspecialchars(rtrim(FLPHPAPP_ASSET_URL, '/'), ENT_QUOTES);
+
+// URL path -> filesystem path under the docroot.
+$docRoot  = rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/');
+$diskPath = $docRoot . '/' . trim($flBase, '/') . '/' . $flEntry;
+
+if ($docRoot !== '' && is_file($diskPath)) {
+    $ver = filemtime($diskPath) ?: time();   // cache-bust when the file changes
+    $src = htmlspecialchars($flBase . '/' . $flEntry . '?v=' . $ver, ENT_QUOTES);
+    echo '<script type="module" src="' . $src . '"></script>';
+}
 ?>
-<script type="module" src="<?= $flBase ?>/init.js"></script>
 <script>
     let tabId = sessionStorage.getItem('tabId');
     if (!tabId) {
