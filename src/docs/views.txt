@@ -1,0 +1,16 @@
+VIEWS
+-----
+
+Views are located in the folder defined in AppConfig::get['ViewDir'];
+If you use a subfolder in that folder to separate views for different modules are something like that, you
+can refer to that view with the following syntax:
+folder.viewname
+
+So for example:
+
+<a href="?view=project.entryform">Add a new project</a>
+
+This will look for the view php-file in the folder defined in AppConfig::get['ViewDir'] in a subfolder called project.
+The view file should be named entryform.php.
+
+
