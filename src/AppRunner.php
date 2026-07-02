@@ -14,6 +14,9 @@ class AppRunner
         echo "<pre>";
         print_r(AppConfig::getConfig());
         echo "</pre>";
+        if ($view == "") {
+            $view = AppConfig::get("StartView");
+        }
         $viewDir = AppConfig::get("ViewDir");
         if ($view !== "") {
             $viewFile = AppConfig::get("BaseDirectory") .  $viewDir . "/" . str_replace('.', '/', $view) . ".php";
