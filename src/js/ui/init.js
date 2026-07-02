@@ -1,1 +1,1 @@
-import './daterangepicker.js';
+import './date-picker.js';
