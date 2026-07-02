@@ -2,7 +2,7 @@
 // Public URL where this package's JS is served.
 // The main project can define this BEFORE including init.php to override it.
 if (!defined('FLPHPAPP_ASSET_URL')) {
-    define('FLPHPAPP_ASSET_URL', '../vendor/afeys/flphpapp/src/js/ui');
+    define('FLPHPAPP_ASSET_URL', '/assets/fl');
 }
 $flBase = htmlspecialchars(rtrim(FLPHPAPP_ASSET_URL, '/'), ENT_QUOTES);
 ?>
