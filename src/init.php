@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . '/AppRunner.php');
 ?>
 <script type="module">
     // load all webcomponents
-    import { FLDatePicker } from './js/ui/date-picker.js';
+    import { FLDatePicker } from '<?php echo dirname(__FILE__); ?>/js/ui/date-picker.js';
 </script>
 <script>
     let tabId = sessionStorage.getItem('tabId');
