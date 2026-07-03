@@ -3,7 +3,6 @@ namespace FL;
 class AppSecurity
 {
     const BOOTCHECK = "FL_BOOTCHECK";
-    const ASSETCHECK = "FL_ASSETCHECK";
 
     public static function fileExistsAndReadOnly($filepath): bool
     {
@@ -37,22 +36,23 @@ class AppSecurity
      * @param string $assetUrlPath URL path where assets are published, e.g. "/assets/fl"
      * @param string $entryFile    A file that must be present there, e.g. "index.js"
      */
-    public static function assetPreCheck($assetUrlPath, $entryFile = "init.js") {
-        if (Session::isSetSessionVariable(self::ASSETCHECK)) {
+    public static function assetPreCheck($assetUrlPath, $assetUrlSubPath, $assetCode, $entryFile = "init.js") {
+        if (Session::isSetSessionVariable($assetCode)) {
             return;
         }
         $docRoot  = rtrim($_SERVER['DOCUMENT_ROOT'] ?? "", "/");
-        $diskPath = $docRoot . "/" . trim($assetUrlPath, "/") . "/" . ltrim($entryFile, "/");
+        $diskPath = $docRoot . "/" . trim($assetUrlPath, "/") . "/" . trim($assetUrlSubPath, "/") . "/" . ltrim($entryFile, "/");
 
         if ($docRoot !== "" && is_file($diskPath) && is_readable($diskPath)) {
-            Session::setSessionVariable(self::ASSETCHECK, "OK");
+            Session::setSessionVariable($assetCode, "OK");
         } else {
             AppError::halt(
                 "FL front-end assets are not published. Expected '"
                 . $assetUrlPath . "/" . $entryFile . "' under the document root. "
-                . "Create the link once, e.g.:  ln -s "
-                . "../vendor/afeys/flphpapp/src/js/ui  "
-                . $docRoot . "/" . trim($assetUrlPath, "/"),
+                . "Make sure the /assets/fl folder exists under the document root and then "
+                . "create the link once, e.g.:  ln -s "
+                . $docRoot . "/../vendor/afeys/flphpapp/src/" . $assetUrlSubPath . "  "
+                . $docRoot . "/" . trim($assetUrlPath, "/") . "/" . trim($assetUrlSubPath, "/"),
                 500
             );
         }
@@ -63,8 +63,8 @@ class AppSecurity
         if (!defined('FLPHPAPP_ASSET_URL')) {
             define('FLPHPAPP_ASSET_URL', '/assets/fl');
         }
-        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL . "/js", "init.js");          // halts with a clear message if missing
-        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL . "/css", "flphpapp.css");    // halts with a clear message if missing
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL, "js", "FLPHPAPP_ASSET_JS", "init.js");          // halts with a clear message if missing
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL, "css", "FLPHPAPP_ASSET_CSS", "flphpapp.css");    // halts with a clear message if missing
     }
 }
 
