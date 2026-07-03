@@ -47,25 +47,75 @@ export class FLWeekdayPicker extends FLValueComponent {
       :host([disabled]) { opacity: 0.5; }
       .wrap {
         display: inline-block;
-        padding: 8px 10px;
+        padding: 10px 12px;
         border: 1px solid var(--fl-line, #ccc);
         border-radius: var(--fl-radius, 6px);
         background: var(--fl-surface, #fff);
+        transition: border-color 0.12s ease;
       }
-      .caption { font-size: 0.85em; color: var(--fl-label, #444); margin-bottom: 6px; }
+      .wrap:focus-within { border-color: var(--fl-accent, #3b82f6); }
+      .caption { font-size: 0.85em; color: var(--fl-label, #444); margin-bottom: 8px; }
       .grid {
         display: grid;
-        grid-template-columns: auto repeat(7, 1.8em);
-        gap: 4px 6px;
+        grid-template-columns: auto repeat(7, auto);
+        gap: 6px;
         align-items: center;
         justify-items: center;
       }
-      .rowlabel { justify-self: end; font-size: 0.8em; color: var(--fl-label, #444); padding-right: 4px; }
-      .daylabel { font-size: 0.8em; color: var(--fl-label, #444); }
-      .cell { display: inline-flex; margin: 0; cursor: pointer; }
-      .cell input { margin: 0; cursor: inherit; accent-color: var(--fl-accent, #3b82f6); }
-      :host([disabled]) .cell,
+      .rowlabel {
+        justify-self: end;
+        font-size: 0.7em;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: var(--fl-label, #444);
+        padding-right: 6px;
+      }
+      /* Each day is a round toggle: the real checkbox is transparent and sits
+         over the visible chip, so clicks/keyboard still drive native state. */
+      .cell {
+        position: relative;
+        display: inline-flex;
+        margin: 0;
+        cursor: pointer;
+      }
+      .cell input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        opacity: 0;
+        cursor: inherit;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.2em;
+        height: 2.2em;
+        border-radius: 50%;
+        border: 1px solid var(--fl-line, #ccc);
+        background: var(--fl-surface, #fff);
+        font-size: 0.8em;
+        font-weight: 600;
+        color: var(--fl-label, #444);
+        user-select: none;
+        transition: background 0.12s ease, border-color 0.12s ease,
+                    color 0.12s ease, transform 0.06s ease;
+      }
+      .cell:hover .chip { border-color: var(--fl-accent, #3b82f6); }
+      .cell:active .chip { transform: scale(0.94); }
+      .cell input:checked + .chip {
+        background: var(--fl-accent, #3b82f6);
+        border-color: var(--fl-accent, #3b82f6);
+        color: #fff;
+      }
+      .cell input:focus-visible + .chip {
+        outline: 2px solid var(--fl-accent, #3b82f6);
+        outline-offset: 2px;
+      }
       .cell input:disabled { cursor: default; }
+      .cell input:disabled + .chip { opacity: 0.6; }
     `;
   }
 
@@ -103,22 +153,24 @@ export class FLWeekdayPicker extends FLValueComponent {
   // --- Structure ---
 
   _buildGrid() {
-    const header = ['<span class="rowlabel"></span>']
-      .concat(DAY_LETTERS.map((l, i) => `<span class="daylabel" title="${DAY_NAMES[i]}">${l}</span>`))
-      .join('');
+    // Each toggle shows its own day letter, so no separate header row is needed.
+    const chip = (day, half) => {
+      const name = DAY_NAMES[day - 1];
+      const aria = half ? `${name} ${half.toUpperCase()}` : name;
+      return `<label class="cell" title="${aria}">`
+          + `<input type="checkbox" data-day="${day}" data-half="${half}" aria-label="${aria}">`
+          + `<span class="chip">${DAY_LETTERS[day - 1]}</span></label>`;
+    };
 
     const row = (half, labelText) => {
-      const cells = DAY_NAMES.map((name, i) => {
-        const day = i + 1;
-        const aria = half ? `${name} ${half.toUpperCase()}` : name;
-        return `<label class="cell"><input type="checkbox" data-day="${day}" data-half="${half}" aria-label="${aria}"></label>`;
-      }).join('');
+      let cells = '';
+      for (let d = 1; d <= 7; d++) cells += chip(d, half);
       return `<span class="rowlabel">${labelText}</span>${cells}`;
     };
 
     this._grid.innerHTML = this.ampm
-      ? header + row('am', 'AM') + row('pm', 'PM')
-      : header + row('', '');
+        ? row('am', 'AM') + row('pm', 'PM')
+        : row('', '');
   }
 
   // --- Value <-> checkboxes ---
@@ -162,8 +214,8 @@ export class FLWeekdayPicker extends FLValueComponent {
     for (const cb of this._grid.querySelectorAll('input[type="checkbox"]')) {
       const d = Number(cb.dataset.day);
       cb.checked = cb.dataset.half === 'am' ? days[d].am
-        : cb.dataset.half === 'pm' ? days[d].pm
-        : (days[d].am || days[d].pm); // single (no AM/PM) row
+          : cb.dataset.half === 'pm' ? days[d].pm
+              : (days[d].am || days[d].pm); // single (no AM/PM) row
     }
   }
 
@@ -198,6 +250,6 @@ export class FLWeekdayPicker extends FLValueComponent {
   }
 }
 
-if (!customElements.get('fl-weekday-picker')) {
-  customElements.define('fl-weekday-picker', FLWeekdayPicker);
+if (!customElements.get('fl-weekdaypicker')) {
+  customElements.define('fl-weekdaypicker', FLWeekdayPicker);
 }
