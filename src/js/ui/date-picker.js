@@ -51,6 +51,7 @@ export class FLDatePicker extends FLValueComponent {
       }
       .display { flex: 1 1 auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
       .display[data-empty] { color: var(--fl-placeholder, #9aa0a6); }
+      .display, .icon { pointer-events: none; }
       .icon { flex: none; width: 16px; height: 16px; opacity: 0.55; }
       /* The native input covers the whole field but is fully transparent:
          it stays interactive (focus/keyboard/click) while its locale text is hidden. */
@@ -67,6 +68,7 @@ export class FLDatePicker extends FLValueComponent {
         background: transparent;
         opacity: 0;
         cursor: inherit;
+        pointer-events: none;   /* input no longer receives clicks — the field does */
       }
       .native:disabled { cursor: default; }
       .native::-webkit-calendar-picker-indicator { opacity: 0; pointer-events: none; }
@@ -115,7 +117,10 @@ export class FLDatePicker extends FLValueComponent {
     // input) means clicks on the icon/text — which are siblings of the input —
     // bubble here too. The indicator's pointer-events:none keeps the browser
     // from opening the picker a second time on its own.
-    this._field.addEventListener('click', () => this._openPicker());
+    this._field.addEventListener('click', () => {
+      console.log('fl-date-picker: field clicked');
+      this._openPicker();
+    });
 
     this._input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); this._openPicker(); }
@@ -156,11 +161,8 @@ export class FLDatePicker extends FLValueComponent {
 
   _openPicker() {
     if (this.disabled || this.readonly) return;
-    try {
-      this._input.showPicker?.();
-    } catch {
-      /* showPicker needs a user gesture; ignore if called outside one */
-    }
+    this._input.focus();      // programmatic focus (pointer-events:none blocks click-focus)
+    this._input.showPicker?.();
   }
 
   _toggleAttr(el, name, value) {
@@ -174,8 +176,8 @@ export class FLDatePicker extends FLValueComponent {
 
   set valueAsDate(date) {
     this.value = date instanceof Date && !Number.isNaN(date.getTime())
-      ? date.toISOString().slice(0, 10)
-      : '';
+        ? date.toISOString().slice(0, 10)
+        : '';
   }
 }
 
