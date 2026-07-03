@@ -358,5 +358,25 @@ tbody tr:hover td { background: var(--surface-alt); }
         <input id="fullname" name="fullname" type="text">
     </div>
    -------------------------------------------------------------------------- */
-.fl-field { display: inline-flex; flex-direction: column; gap: 4px; }
+.fl-field { display: inline-flex; flex-direction: column; gap: 4px; font: inherit; vertical-align: top; }
 .fl-label { font-size: 0.85em; color: var(--fl-label, #444); }
+
+.fl-field > input,
+.fl-field > select,
+.fl-field > textarea {
+    font: inherit;                 /* not the smaller UA default — fixes the height */
+    margin: 0;                     /* kill the UA margin that widens the label gap */
+    padding: 6px 10px;             /* identical to the datepicker .field */
+    border: 1px solid var(--fl-line, #ccc);
+    border-radius: var(--fl-radius, 6px);
+    background: var(--fl-surface, #fff);
+    color: inherit;
+    box-sizing: border-box;
+}
+.fl-field > input:focus-visible,
+.fl-field > select:focus-visible,
+.fl-field > textarea:focus-visible {
+    outline: 2px solid var(--fl-accent, #3b82f6);
+    outline-offset: 1px;
+    border-color: var(--fl-accent, #3b82f6);
+}
