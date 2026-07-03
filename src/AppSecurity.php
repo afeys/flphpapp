@@ -58,6 +58,10 @@ class AppSecurity
         }
     }
     public static function preBootCheck($configPath) {
+        if (FrontEnd::getFieldValue("reset", "") == "yes") {
+            Session::clearSessionVariable("FLPHPAPP_ASSET_JS");
+            Session::clearSessionVariable("FLPHPAPP_ASSET_CSS");
+        }
         AppSecurity::configPermissionsCheck($configPath);
 
         if (!defined('FLPHPAPP_ASSET_URL')) {
