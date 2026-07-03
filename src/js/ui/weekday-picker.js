@@ -43,8 +43,9 @@ export class FLWeekdayPicker extends FLValueComponent {
 
   styles() {
     return `
-      :host { display: inline-block; font: inherit; }
+      :host { display: inline-flex; flex-direction: column; gap: 4px; font: inherit; }
       :host([disabled]) { opacity: 0.5; }
+      .label { font-size: 0.85em; color: var(--fl-label, #444); }
       .wrap {
         display: inline-block;
         padding: 10px 12px;
@@ -54,7 +55,6 @@ export class FLWeekdayPicker extends FLValueComponent {
         transition: border-color 0.12s ease;
       }
       .wrap:focus-within { border-color: var(--fl-accent, #3b82f6); }
-      .caption { font-size: 0.85em; color: var(--fl-label, #444); margin-bottom: 8px; }
       .grid {
         display: grid;
         grid-template-columns: auto repeat(7, auto);
@@ -121,8 +121,8 @@ export class FLWeekdayPicker extends FLValueComponent {
 
   template() {
     return `
+      <label part="label" class="label" hidden></label>
       <div part="control" class="wrap" role="group">
-        <div class="caption" hidden></div>
         <div class="grid"></div>
       </div>
     `;
@@ -130,7 +130,7 @@ export class FLWeekdayPicker extends FLValueComponent {
 
   firstRendered() {
     this._grid = this.$('.grid');
-    this._caption = this.$('.caption');
+    this._label = this.$('.label');
     this._wrap = this.$('.wrap');
 
     // One delegated listener survives grid rebuilds (the .grid element persists).
@@ -144,9 +144,17 @@ export class FLWeekdayPicker extends FLValueComponent {
     if (changed.has('ampm') || changed.has('disabled') || changed.has('readonly')) this._syncEnabled();
     if (changed.has('label')) {
       const has = !!this.label;
-      this._caption.textContent = this.label ?? '';
-      this._caption.hidden = !has;
-      this._wrap.setAttribute('aria-label', this.label || 'Weekday selection');
+      this._label.textContent = this.label ?? '';
+      this._label.hidden = !has;
+      // A group of checkboxes can't use label[for], so associate via aria-labelledby.
+      if (has) {
+        if (!this._label.id) this._label.id = `fl-wp-label-${Math.random().toString(36).slice(2, 8)}`;
+        this._wrap.setAttribute('aria-labelledby', this._label.id);
+        this._wrap.removeAttribute('aria-label');
+      } else {
+        this._wrap.removeAttribute('aria-labelledby');
+        this._wrap.setAttribute('aria-label', 'Weekday selection');
+      }
     }
   }
 

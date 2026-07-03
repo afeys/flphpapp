@@ -350,3 +350,13 @@ tbody tr:hover td { background: var(--surface-alt); }
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
 }
+
+/* --------------------------------------------------------------------------
+   12. label stuff for standard html elements
+    <div class="fl-field">
+        <label class="fl-label" for="fullname">Full name</label>
+        <input id="fullname" name="fullname" type="text">
+    </div>
+   -------------------------------------------------------------------------- */
+.fl-field { display: inline-flex; flex-direction: column; gap: 4px; }
+.fl-label { font-size: 0.85em; color: var(--fl-label, #444); }
