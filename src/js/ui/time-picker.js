@@ -132,6 +132,7 @@ export class FLTimePicker extends FLValueComponent {
         this._input.addEventListener('input', () => {
             this._input.value = this._sanitize(this._input.value);
         });
+        this._input.addEventListener('focus', () => this._close());
         this._input.addEventListener('blur', () => this._commit(this._input.value));
         this._input.addEventListener('keydown', (e) => this._onKeydown(e));
 
