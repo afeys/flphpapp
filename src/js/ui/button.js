@@ -37,7 +37,9 @@ export class FLButton extends FLBaseComponent {
 
       .btn {
         display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        font: inherit; line-height: 1.2;
+        font: inherit;
+        height: 1.4em;              /* fixed content height so all label types match */
+        box-sizing: content-box;    /* padding adds on top of the 1.4em line */
         padding: 7px 14px;
         border: 1px solid var(--fl-line, #ccc);
         border-radius: var(--fl-radius, 6px);
@@ -46,7 +48,7 @@ export class FLButton extends FLBaseComponent {
         cursor: pointer; user-select: none;
         transition: filter 0.12s ease, transform 0.04s ease;
       }
-      .btn.icononly { padding: 7px; }
+      .btn.icononly { padding: 7px; width: 1.4em; }
       .btn:hover { filter: brightness(0.96); }
       .btn:active { transform: translateY(1px); filter: brightness(0.92); }
       .btn:focus-visible { outline: 2px solid var(--fl-accent, #3b82f6); outline-offset: 2px; }
@@ -59,10 +61,11 @@ export class FLButton extends FLBaseComponent {
         background: var(--fl-danger, #dc2626); border-color: var(--fl-danger, #dc2626); color: #fff;
       }
 
-      .img { height: 1.15em; width: auto; display: block; }
+      .img { height: 1.15em; width: auto; display: block; flex: none; }
       .micon {
         font-family: var(--fl-icon-font, 'Material Icons');
-        font-size: 1.25em; line-height: 1; font-weight: normal; font-style: normal;
+        font-size: 1.25em; line-height: 1; height: 1em; display: inline-flex; align-items: center;
+        font-weight: normal; font-style: normal;
         white-space: nowrap; -webkit-font-feature-settings: 'liga'; font-feature-settings: 'liga';
       }
       .text { white-space: nowrap; }
