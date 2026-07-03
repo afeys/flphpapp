@@ -24,6 +24,7 @@ if ($docRoot !== '' && is_file($diskPath)) {
     $src = htmlspecialchars($flBase . '/css/' . $flEntryCSS . '?v=' . $ver, ENT_QUOTES);
     echo '<link rel="stylesheet" href="' . $src . '">';
 }
+echo '<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">';
 ?>
 <script>
     let tabId = sessionStorage.getItem('tabId');
