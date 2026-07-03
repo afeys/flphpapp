@@ -14,7 +14,7 @@ $diskPath = $docRoot . '/' . trim($flBase, '/') . '/js/' . $flEntryJS;
 
 if ($docRoot !== '' && is_file($diskPath)) {
     $ver = filemtime($diskPath) ?: time();   // cache-bust when the file changes
-    $src = htmlspecialchars($flBase . '/' . $flEntryJS . '?v=' . $ver, ENT_QUOTES);
+    $src = htmlspecialchars($flBase . '/js/' . $flEntryJS . '?v=' . $ver, ENT_QUOTES);
     echo '<script type="module" src="' . $src . '"></script>';
 }
 $diskPath = $docRoot . '/' . trim($flBase, '/') . '/css/' . $flEntryCSS;
