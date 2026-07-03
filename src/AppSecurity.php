@@ -63,7 +63,8 @@ class AppSecurity
         if (!defined('FLPHPAPP_ASSET_URL')) {
             define('FLPHPAPP_ASSET_URL', '/assets/fl');
         }
-        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL);   // halts with a clear message if missing
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL . "/js", "init.js");          // halts with a clear message if missing
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL . "/css", "flphpapp.css");    // halts with a clear message if missing
     }
 }
 
