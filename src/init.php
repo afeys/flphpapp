@@ -21,7 +21,7 @@ $diskPath = $docRoot . '/' . trim($flBase, '/') . '/css/' . $flEntryCSS;
 
 if ($docRoot !== '' && is_file($diskPath)) {
     $ver = filemtime($diskPath) ?: time();   // cache-bust when the file changes
-    $src = htmlspecialchars($flBase . '/' . $flEntryCSS . '?v=' . $ver, ENT_QUOTES);
+    $src = htmlspecialchars($flBase . '/css/' . $flEntryCSS . '?v=' . $ver, ENT_QUOTES);
     echo '<link rel="stylesheet" href="' . $src . '">';
 }
 ?>

@@ -93,6 +93,7 @@ export class FLDatePicker extends FLValueComponent {
     this._input = this.$('input');
     this._display = this.$('.display');
     this._label = this.$('.label');
+    this._field = this.$('.field');
 
     // Associate the visible label with the native control for screen readers.
     const id = `fl-dp-${Math.random().toString(36).slice(2, 9)}`;
@@ -109,9 +110,13 @@ export class FLDatePicker extends FLValueComponent {
       this._renderDisplay();
       this._emitChange();
     });
-    // Open the calendar on click (native date inputs don't reliably open on a
-    // plain field click across browsers, so we use the standard showPicker API).
-    this._input.addEventListener('click', () => this._openPicker());
+
+    // Open on any click within the field. Listening on the container (not the
+    // input) means clicks on the icon/text — which are siblings of the input —
+    // bubble here too. The indicator's pointer-events:none keeps the browser
+    // from opening the picker a second time on its own.
+    this._field.addEventListener('click', () => this._openPicker());
+
     this._input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); this._openPicker(); }
     });
