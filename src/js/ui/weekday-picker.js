@@ -250,6 +250,6 @@ export class FLWeekdayPicker extends FLValueComponent {
   }
 }
 
-if (!customElements.get('fl-weekdaypicker')) {
-  customElements.define('fl-weekdaypicker', FLWeekdayPicker);
+if (!customElements.get('fl-weekday-picker')) {
+  customElements.define('fl-weekday-picker', FLWeekdayPicker);
 }
