@@ -91,8 +91,8 @@ export class FLBaseComponent extends HTMLElement {
   /** Attributes the browser will watch (those with observe !== false). */
   static get observedAttributes() {
     return Object.values(this._propertyDefs())
-      .filter((def) => def.observe)
-      .map((def) => def.attribute);
+        .filter((def) => def.observe)
+        .map((def) => def.attribute);
   }
 
   static _defByAttribute(attr) {
@@ -121,7 +121,7 @@ export class FLBaseComponent extends HTMLElement {
     this.attachShadow({ mode: 'open' });
 
     this._values = {};          // backing store for properties
-    this._reflecting = false;   // guard against attribute<->property loops
+    this._reflectingAttrs = new Set(); // attributes mid-reflection (guards only their own echo)
     this._hasRendered = false;
     this._changed = new Map();  // props changed since last flush
     this._updateScheduled = false;
@@ -151,7 +151,7 @@ export class FLBaseComponent extends HTMLElement {
   }
 
   attributeChangedCallback(attrName, _oldVal, newVal) {
-    if (this._reflecting) return; // change originated from our own reflection
+    if (this._reflectingAttrs.has(attrName)) return; // echo from our own reflection of THIS attribute
     const def = this.constructor._defByAttribute(attrName);
     if (!def) return;
     this[def.name] = fromAttribute(newVal, def.type);
@@ -170,10 +170,10 @@ export class FLBaseComponent extends HTMLElement {
 
   _reflectToAttribute(def, value) {
     const attrValue = toAttribute(value, def.type);
-    this._reflecting = true;
+    this._reflectingAttrs.add(def.attribute);
     if (attrValue === null) this.removeAttribute(def.attribute);
     else this.setAttribute(def.attribute, attrValue);
-    this._reflecting = false;
+    this._reflectingAttrs.delete(def.attribute);
   }
 
   _upgradeProperty(name) {
@@ -206,11 +206,11 @@ export class FLBaseComponent extends HTMLElement {
     const css = this.styles();
     const markup = this.template();
     this.shadowRoot.innerHTML =
-      (css ? `<style>${css}</style>` : '') + (markup || '');
+        (css ? `<style>${css}</style>` : '') + (markup || '');
     this.firstRendered();
     // Sync every property to the freshly-rendered DOM once.
     const all = new Map(
-      Object.keys(this.constructor._propertyDefs()).map((n) => [n, undefined]),
+        Object.keys(this.constructor._propertyDefs()).map((n) => [n, undefined]),
     );
     this.updated(all);
   }
