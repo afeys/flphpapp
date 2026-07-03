@@ -1,3 +1,4 @@
+import './ui/button.js';
 import './ui/time-picker.js';
 import './ui/date-picker.js';
 import './ui/weekday-picker.js';
