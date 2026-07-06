@@ -33,7 +33,7 @@ export class FLButton extends FLBaseComponent {
 
   styles() {
     return `
-      :host { display: inline-block; position: relative; font: inherit; }
+      :host { display: inline-block; position: relative; font: inherit; vertical-align: middle; }
 
       .btn {
         display: inline-flex; align-items: center; justify-content: center; gap: 8px;
