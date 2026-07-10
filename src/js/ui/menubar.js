@@ -56,6 +56,40 @@ export class FLMenuBar extends FLBaseComponent {
         font-family: var(--fl-icon-font, 'Material Icons');
         font-size: 22px; line-height: 1;
       }
+      /* Slotted user/system buttons are in the HOST's light DOM, so an
+         aggressive host reset like  button { font: inherit; background: navy }
+         would otherwise override them (outer-tree normal beats inner-tree
+         normal). !important lets these inner-tree rules win regardless. */
+      ::slotted(button),
+      ::slotted(.usericon),
+      ::slotted(.sysicon) {
+        font-family: var(--fl-icon-font, 'Material Icons') !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        font-feature-settings: 'liga' !important;
+        font-size: 22px !important;
+        line-height: 1 !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 44px !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 10px !important;
+        background: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        color: inherit !important;
+        cursor: pointer !important;
+        -webkit-font-smoothing: antialiased;
+      }
+      ::slotted(button:hover),
+      ::slotted(.usericon:hover),
+      ::slotted(.sysicon:hover) {
+        background: var(--fl-menu-hover, rgba(255,255,255,0.08)) !important;
+      }
       ::slotted(*) { color: inherit; }
     `;
   }
@@ -156,8 +190,8 @@ export class FLMenuBar extends FLBaseComponent {
 
   _emitUserChange() {
     const nodes = typeof this._userSlot.assignedElements === 'function'
-      ? this._userSlot.assignedElements()
-      : [];
+        ? this._userSlot.assignedElements()
+        : [];
     const ids = nodes.map((n) => n.getAttribute('data-id') || n.id).filter(Boolean);
     this.emit('fl-usericons-change', { detail: { ids, count: nodes.length }, bubbles: true, composed: true });
   }
