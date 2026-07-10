@@ -105,6 +105,7 @@ export class FLMenuPanel extends FLBaseComponent {
     return `
       <div class="wrap" part="panel">
         <div class="inner">
+          <div class="top" part="top"><slot name="top"></slot></div>
           <div class="groups"><slot></slot></div>
           <button class="close" part="close" aria-label="Close menu">
             <span class="micon" aria-hidden="true">close</span>
