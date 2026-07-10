@@ -89,8 +89,8 @@ export class FLMenuItem extends FLBaseComponent {
   subItemNodes() {
     if (!this._slot) return [];
     return this._slot
-      .assignedElements({ flatten: true })
-      .map((n) => n.cloneNode(true));
+        .assignedElements({ flatten: true })
+        .map((n) => n.cloneNode(true));
   }
 
   updated(changed) {
