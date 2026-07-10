@@ -7,6 +7,44 @@
    (see the notes at the bottom of this file).
    ========================================================================== */
 
+
+/* --------------------------------------------------------------------------
+   0. Material Design Fonts
+   Place material-icons.woff2 next to this CSS, in a fonts/ subfolder:
+     src/css/fonts/material-icons.woff2   ->  /assets/fl/css/fonts/material-icons.woff2
+   The url() below is relative to THIS css file, so keep them together.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    /* 'block' hides the ligature TEXT while the font loads, so you never see the
+       word "search" flash before the glyph appears. */
+    font-display: block;
+    src: url('fonts/material-icons.woff2') format('woff2');
+}
+
+/* Helper class for app-authored icons, e.g. <span class="material-icons">search</span>.
+   (The FL components style their own internal icons; this is for YOUR markup.) */
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+}
+
 /* --------------------------------------------------------------------------
    1. Design tokens
    -------------------------------------------------------------------------- */
