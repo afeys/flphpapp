@@ -438,3 +438,26 @@ tbody tr:hover td { background: var(--surface-alt); }
     outline-offset: 1px;
     border-color: var(--fl-accent, #3b82f6);
 }
+
+/* --------------------------------------------------------------------------
+   13. Menu panel command line (.doline) + panel padding (.panelpad)
+   These are app-authored layout classes used inside <fl-menu-panel>.
+   -------------------------------------------------------------------------- */
+.doline {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 18px;
+    background: var(--fl-menu-accent, #00a2b3);
+    color: #fff;
+    font-weight: 600;
+}
+.doline input {
+    flex: 1;
+    width: auto;          /* override the global input{width:100%} */
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 3px;
+}
+.doline button { padding: 6px 12px; }
+.panelpad { padding: 16px 18px; }
