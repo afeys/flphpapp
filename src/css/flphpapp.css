@@ -120,6 +120,7 @@
     --fl-menu-rail-width: 300px;  /* left rail width */
     --fl-menu-detail-min-height: 220px;  /* keeps the right zone from collapsing when empty */
     /* --fl-menu-subitem-bg / -fg / -hover — the chip colours (default blue #2f6fd8) */
+    --fl-menu-subitem-bg: #2b78a2;
 
 }
 
