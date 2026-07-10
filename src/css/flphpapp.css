@@ -67,6 +67,18 @@
     --fl-label: #444;
     --fl-placeholder: #9aa0a6;
     --fl-radius: 6px;
+
+    /* used for styling the menu */
+    --fl-menu-bg: #1e1e1e;
+    --fl-menu-user-bg: #333;
+    --fl-menu-system-bg: #000;
+    --fl-menu-panel-bg: #262626;
+    --fl-menu-fg: #eee;
+    --fl-menu-fg-muted: #cfcfcf;   /* bump this up if links look too dim */
+    --fl-menu-accent: #00a2b3;
+    --fl-menu-highlight: #2f6fd8;
+    --fl-menu-hover: rgba(255,255,255,0.08);
+    --fl-icon-font: 'Material Icons';
 }
 
 /* --------------------------------------------------------------------------
@@ -80,7 +92,7 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
     margin: 0;
-    padding: var(--space-5);
+    padding: 0;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
