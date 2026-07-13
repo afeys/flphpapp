@@ -2,10 +2,12 @@
 //
 // FLMenuBar — built on FLBaseComponent.
 //
-// A three-zone top bar:
-//   [ hamburger ] [ user zone (grey, flexible) ] [ system zone (black, fixed) ]
+// A four-zone top bar:
+//   [ hamburger ] [ fixed zone (grey) ] [ user zone (grey, flexible) ] [ system zone (black) ]
 //
 //   - hamburger toggles a linked <fl-menu-panel> (by id via the `panel` attribute)
+//   - fixed zone: slot name="fixed" — app-wide icons, the same for every user,
+//     but not "system" icons (grey background, same as the user zone)
 //   - user zone: slot name="user" — app-added shortcut icons (grey background)
 //   - system zone: a built-in "+" add button + slot name="system" — fixed app icons
 //   - hovering/focusing "+" highlights the user zone (it's what the add affects)
@@ -15,6 +17,7 @@
 //
 // Usage:
 //   <fl-menubar panel="mainmenu">
+//     <button slot="fixed" class="fixedicon" data-panel="home">home</button>
 //     <button slot="user" data-id="wiki"><span class="material-icons">public</span></button>
 //     <span slot="system" class="material-icons">search</span>
 //     <span slot="system" class="material-icons">power_settings_new</span>
@@ -45,6 +48,13 @@ export class FLMenuBar extends FLBaseComponent {
       .btn:hover { background: var(--fl-menu-hover, rgba(255,255,255,0.08)); }
       .btn:focus-visible { outline: 2px solid var(--fl-menu-accent, #00a2b3); outline-offset: -2px; }
       .zone { display: flex; align-items: center; }
+      .zone.fixed {
+        flex: none; gap: 4px; padding: 0 8px;
+        background: var(--fl-menu-user-bg, #333);
+        /* subtle divider so the app-wide icons read as separate from the
+           user's own shortcuts; set --fl-menu-divider to transparent to drop it */
+        border-right: 1px solid var(--fl-menu-divider, rgba(255,255,255,0.08));
+      }
       .zone.user {
         flex: 1 1 auto; gap: 4px; padding: 0 8px; min-width: 0; overflow-x: auto;
         background: var(--fl-menu-user-bg, #333);
@@ -61,6 +71,7 @@ export class FLMenuBar extends FLBaseComponent {
          would otherwise override them (outer-tree normal beats inner-tree
          normal). !important lets these inner-tree rules win regardless. */
       ::slotted(button),
+      ::slotted(.fixedicon),
       ::slotted(.usericon),
       ::slotted(.sysicon) {
         font-family: var(--fl-icon-font, 'Material Icons') !important;
@@ -86,6 +97,7 @@ export class FLMenuBar extends FLBaseComponent {
         -webkit-font-smoothing: antialiased;
       }
       ::slotted(button:hover),
+      ::slotted(.fixedicon:hover),
       ::slotted(.usericon:hover),
       ::slotted(.sysicon:hover) {
         background: var(--fl-menu-hover, rgba(255,255,255,0.08)) !important;
@@ -100,6 +112,7 @@ export class FLMenuBar extends FLBaseComponent {
         <button class="ham btn" part="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-haspopup="true">
           <span class="micon" aria-hidden="true">menu</span>
         </button>
+        <div class="zone fixed" part="fixed-zone"><slot name="fixed"></slot></div>
         <div class="zone user" part="user-zone"><slot name="user"></slot></div>
         <div class="zone system" part="system-zone">
           <button class="add btn" part="add" aria-label="Add shortcut">
