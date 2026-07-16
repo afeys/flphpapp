@@ -7,4 +7,5 @@ import './ui/menu-group.js';
 import './ui/menu-panel.js';
 import './ui/menubar.js';
 import './ui/menu-builder.js';
+import './ui/table.js';
 import './ui/datasource.js';
