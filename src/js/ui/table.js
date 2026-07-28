@@ -122,6 +122,8 @@ const ROW_ACTIONS = {
   comments:   { icon: 'chat',        title: 'Comments' },
   open:       { icon: 'open_in_new', title: 'Open in new tab' },
   opennewtab: { icon: 'open_in_new', title: 'Open in new tab' },
+  delete:     { icon: 'delete',      title: 'Delete' },
+  remove:     { icon: 'delete',      title: 'Delete' },
 };
 
 // Toolbar features that can be switched on/off via attributes. Each _show key
@@ -320,7 +322,7 @@ export class FLTable extends FLBaseComponent {
 
     // value convertors
     this._convertors = Array.from(this.querySelectorAll('fl-valueconvertor')).map((el) =>
-      new FLValueConvertor(el.getAttribute('name') || '', el.getAttribute('type') || '', el.getAttribute('view') || 'home'),
+        new FLValueConvertor(el.getAttribute('name') || '', el.getAttribute('type') || '', el.getAttribute('view') || 'home'),
     );
 
     // declarative conditional formatting
@@ -359,29 +361,29 @@ export class FLTable extends FLBaseComponent {
 
     // per-row action icons: rowactions="edit,comment,open" (order preserved)
     this._rowactions = (this.getAttribute('rowactions') || '')
-      .split(/[,\s]+/)
-      .map((a) => a.trim().toLowerCase())
-      .filter((a) => ROW_ACTIONS[a]);
+        .split(/[,\s]+/)
+        .map((a) => a.trim().toLowerCase())
+        .filter((a) => ROW_ACTIONS[a]);
     this._hasRowActions = this._rowactions.length > 0;
 
     // grouping: groupby="status" or "status,category" (multi-level). Groups the
     // rows of the CURRENT page (grouping is a client-side view over loaded data).
     this._groupby = (this.getAttribute('groupby') || '')
-      .split(/[,\s]+/)
-      .map((f) => f.trim())
-      .filter(Boolean);
+        .split(/[,\s]+/)
+        .map((f) => f.trim())
+        .filter(Boolean);
     this._hasGrouping = this._groupby.length > 0;
 
     // inline editing: any column with `editable`, unless the table is readonly.
     this._hasEditableColumns = this._columns.some((c) => this._isColumnEditable(c));
     this._editingEnabled = this._hasEditableColumns
-      && !this.hasAttribute('readonly') && !this.hasAttribute('no-edit');
+        && !this.hasAttribute('readonly') && !this.hasAttribute('no-edit');
 
     // Add button: mode is "inline" (empty editable entry row) or "event" (emit
     // fl-table-add for the app to handle). Defaults to inline when the table has
     // editable columns, else event. Inline needs editable columns to be useful.
     this._addmode = (this.getAttribute('addmode') || '').toLowerCase()
-      || (this._hasEditableColumns ? 'inline' : 'event');
+        || (this._hasEditableColumns ? 'inline' : 'event');
     this._addlabel = this.getAttribute('addlabel') || 'Add';
     this._inlineAddEnabled = this._show.add && this._addmode === 'inline' && this._hasEditableColumns;
 
@@ -391,7 +393,7 @@ export class FLTable extends FLBaseComponent {
 
     // count visible columns (+1 for the leading actions column when present)
     this._visiblecolumns = this._columns.filter((c) => this._isColumnVisible(c)).length
-      + (this._hasActionsColumn ? 1 : 0);
+        + (this._hasActionsColumn ? 1 : 0);
   }
 
   _applyMinimalModes() {
@@ -689,24 +691,24 @@ export class FLTable extends FLBaseComponent {
     this._setLoading(true);
 
     fetch(this.getDataLoaderURL().toString(), { headers: { Accept: 'application/json' } })
-      .then((res) => res.text())
-      .then((text) => {
-        let payload;
-        try { payload = JSON.parse(text); } catch { payload = null; }
-        const records = payload && Array.isArray(payload.data) ? payload.data : [];
-        this._records = records;
-        this._recordsById = new Map(records.map((r) => [String(r[this.primarykeyfield]), r]));
-        this._totalrecords = Number(payload?.totalrecs ?? records.length) || 0;
-        this._page = Number(payload?.page ?? this._page) || 1;
+        .then((res) => res.text())
+        .then((text) => {
+          let payload;
+          try { payload = JSON.parse(text); } catch { payload = null; }
+          const records = payload && Array.isArray(payload.data) ? payload.data : [];
+          this._records = records;
+          this._recordsById = new Map(records.map((r) => [String(r[this.primarykeyfield]), r]));
+          this._totalrecords = Number(payload?.totalrecs ?? records.length) || 0;
+          this._page = Number(payload?.page ?? this._page) || 1;
 
-        this._computePages();
-        this.renderColumnHeaders();
-        this.renderPagination();
-        this._renderBody(records);
-        this._setLoading(false);
-        this.emit('tableload');
-      })
-      .catch(() => { this._setLoading(false); this._renderEmpty(); });
+          this._computePages();
+          this.renderColumnHeaders();
+          this.renderPagination();
+          this._renderBody(records);
+          this._setLoading(false);
+          this.emit('tableload');
+        })
+        .catch(() => { this._setLoading(false); this._renderEmpty(); });
   }
 
   /** Toggle the (non-collapsing) loading state. */
@@ -993,8 +995,8 @@ export class FLTable extends FLBaseComponent {
       try {
         const arr = JSON.parse(raw);
         return arr.map((o) => (o && typeof o === 'object')
-          ? { value: o.value, label: o.label ?? String(o.value) }
-          : { value: o, label: String(o) });
+            ? { value: o.value, label: o.label ?? String(o.value) }
+            : { value: o, label: String(o) });
       } catch { /* fall through */ }
     }
     // "v1:Label 1, v2:Label 2"  OR  "a, b, c"
@@ -1093,14 +1095,14 @@ export class FLTable extends FLBaseComponent {
     body.set('field', field);
     body.set('value', value == null ? '' : String(value));
     fetch(this.editurl, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
-      .then((res) => { if (!res.ok) throw new Error('save failed'); })
-      .catch(() => {
-        record[field] = oldValue; // revert
-        const cell = this.$$(`tr[data-fl-recordid="${record[this.primarykeyfield]}"] td[data-fl-datafield="${field}"]`)[0];
-        const col = this._columns.find((c) => c.getAttribute('datafield') === field);
-        if (cell && col) this._renderCellContent(cell, col, record);
-        this.emit('fl-table-editerror', { detail: { recordid: record[this.primarykeyfield], field, value } });
-      });
+        .then((res) => { if (!res.ok) throw new Error('save failed'); })
+        .catch(() => {
+          record[field] = oldValue; // revert
+          const cell = this.$$(`tr[data-fl-recordid="${record[this.primarykeyfield]}"] td[data-fl-datafield="${field}"]`)[0];
+          const col = this._columns.find((c) => c.getAttribute('datafield') === field);
+          if (cell && col) this._renderCellContent(cell, col, record);
+          this.emit('fl-table-editerror', { detail: { recordid: record[this.primarykeyfield], field, value } });
+        });
   }
 
   // ---- add row (Phase 3) ----------------------------------------------
@@ -1196,9 +1198,9 @@ export class FLTable extends FLBaseComponent {
       const body = new URLSearchParams();
       for (const [k, v] of Object.entries(rec)) body.set(k, v == null ? '' : String(v));
       fetch(this.addurl, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
-        .then((res) => { if (!res.ok) throw new Error('add failed'); return res; })
-        .then(() => { this._page = 1; this.loadData(); }) // re-fetch so the server-assigned id/row appears
-        .catch(() => this.emit('fl-table-adderror', { detail: { record: rec } }));
+          .then((res) => { if (!res.ok) throw new Error('add failed'); return res; })
+          .then(() => { this._page = 1; this.loadData(); }) // re-fetch so the server-assigned id/row appears
+          .catch(() => this.emit('fl-table-adderror', { detail: { record: rec } }));
     } else {
       // no add-url: optimistic local insert at the top of the current page
       this._records.unshift(rec);
@@ -1242,7 +1244,7 @@ export class FLTable extends FLBaseComponent {
         sortBtn.className = 'fltable-sortbtn';
         sortBtn.setAttribute('data-fl-sortfield', datafield);
         sortBtn.innerHTML = `<span class="material-icons" style="pointer-events:none">${
-          idx ? (idx.dir === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down') : 'unfold_more'
+            idx ? (idx.dir === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down') : 'unfold_more'
         }</span>`;
         container.appendChild(sortBtn);
 
@@ -1582,10 +1584,10 @@ export class FLTable extends FLBaseComponent {
 
   getAdvancedFilterAsQueryPart() {
     return this._advancedfilter
-      .filter((p) => Array.isArray(p) && p.length >= 2)
-      .map(([field, operator, parameter = '']) => this.constructQueryPart(field, operator, parameter))
-      .filter(Boolean)
-      .join(' and ');
+        .filter((p) => Array.isArray(p) && p.length >= 2)
+        .map(([field, operator, parameter = '']) => this.constructQueryPart(field, operator, parameter))
+        .filter(Boolean)
+        .join(' and ');
   }
 
   // ---- advanced filter BUILDER popup (Phase 2) ------------------------
@@ -1593,8 +1595,8 @@ export class FLTable extends FLBaseComponent {
   /** Columns eligible for filtering: visible + has a datafield. */
   _filterableColumns() {
     return this._columns
-      .filter((c) => this._isColumnVisible(c) && c.getAttribute('datafield'))
-      .map((c) => ({ value: c.getAttribute('datafield'), label: c.getAttribute('label') || c.getAttribute('datafield') }));
+        .filter((c) => this._isColumnVisible(c) && c.getAttribute('datafield'))
+        .map((c) => ({ value: c.getAttribute('datafield'), label: c.getAttribute('label') || c.getAttribute('datafield') }));
   }
 
   /** Build a <select> from [{value,label}] with `selected` preselected. */
@@ -1703,9 +1705,9 @@ export class FLTable extends FLBaseComponent {
 
     const fieldSel = this._select(fields, field || fields[0].value, 'fl-sortline-field');
     const dirSel = this._select(
-      [{ value: 'asc', label: 'Ascending' }, { value: 'desc', label: 'Descending' }],
-      direction === 'desc' ? 'desc' : 'asc',
-      'fl-sortline-dir',
+        [{ value: 'asc', label: 'Ascending' }, { value: 'desc', label: 'Descending' }],
+        direction === 'desc' ? 'desc' : 'asc',
+        'fl-sortline-dir',
     );
 
     const remove = document.createElement('button');
@@ -1873,8 +1875,8 @@ export class FLTable extends FLBaseComponent {
     const labelFor = (op) => (OPERATOR_LABELS.find(([v]) => v === op)?.[1] || op).toLowerCase();
     const glueWord = (rule.glue === 'any' || rule.glue === 'or') ? ' or ' : ' and ';
     const condText = (rule.conditions || [])
-      .map((c) => `${c.fieldname} ${labelFor(c.operator)} "${c.parameter}"`)
-      .join(glueWord);
+        .map((c) => `${c.fieldname} ${labelFor(c.operator)} "${c.parameter}"`)
+        .join(glueWord);
     const targetText = rule.target === '[row]' ? 'entire row' : rule.target;
     wrap.appendChild(this._mk('span', null, `If ${condText || '(no conditions)'} → format ${targetText}: `));
 
@@ -1943,8 +1945,8 @@ export class FLTable extends FLBaseComponent {
     const glueRow = this._mk('div', 'fltable-cf-row');
     glueRow.appendChild(this._mk('label', 'fltable-cf-label', 'Match'));
     const glueSel = this._select(
-      [{ value: 'all', label: 'All conditions' }, { value: 'any', label: 'Any condition' }],
-      'all', 'fl-cf-glue',
+        [{ value: 'all', label: 'All conditions' }, { value: 'any', label: 'Any condition' }],
+        'all', 'fl-cf-glue',
     );
     glueRow.appendChild(glueSel);
     editor.appendChild(glueRow);
@@ -2185,8 +2187,8 @@ export class FLTable extends FLBaseComponent {
     if (cf.conditions.length === 0) return false;
     const results = cf.conditions.map((c) => this._checkCondition(c, record));
     return cf.glue === 'any' || cf.glue === 'or'
-      ? results.some(Boolean)
-      : results.every(Boolean);
+        ? results.some(Boolean)
+        : results.every(Boolean);
   }
 
   _applyRowFormatting(row, record) {
