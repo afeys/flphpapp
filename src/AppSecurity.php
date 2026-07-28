@@ -57,20 +57,18 @@ class AppSecurity
             );
         }
     }
-    public static function preBootCheck($configPath, $flags = array()) {
+    public static function preBootCheck($configPath) {
         if (FrontEnd::getFieldValue("reset", "") == "yes") {
             Session::clearSessionVariable("FLPHPAPP_ASSET_JS");
             Session::clearSessionVariable("FLPHPAPP_ASSET_CSS");
         }
         AppSecurity::configPermissionsCheck($configPath);
 
-        if (!in_array(AppRunner::NOASSETLOAD, $flags) ) {
-            if (!defined('FLPHPAPP_ASSET_URL')) {
-                define('FLPHPAPP_ASSET_URL', '/assets/fl');
-            }
-            AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL, "js", "FLPHPAPP_ASSET_JS", "init.js");          // halts with a clear message if missing
-            AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL, "css", "FLPHPAPP_ASSET_CSS", "flphpapp.css");    // halts with a clear message if missing
+        if (!defined('FLPHPAPP_ASSET_URL')) {
+            define('FLPHPAPP_ASSET_URL', '/assets/fl');
         }
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL, "js", "FLPHPAPP_ASSET_JS", "init.js");          // halts with a clear message if missing
+        AppSecurity::assetPreCheck(FLPHPAPP_ASSET_URL, "css", "FLPHPAPP_ASSET_CSS", "flphpapp.css");    // halts with a clear message if missing
     }
 }
 

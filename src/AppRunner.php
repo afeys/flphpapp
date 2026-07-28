@@ -2,10 +2,9 @@
 namespace FL;
 class AppRunner
 {
-    public const NOASSETLOAD = "no-asset-load";
-    public function __construct($configPath, $flags = array())  {
+    public function __construct($configPath)  {
         self::init($configPath);
-        AppSecurity::preBootCheck($configPath, $flags);
+        AppSecurity::preBootCheck($configPath);
     }
 
     public static function init($configPath) {
