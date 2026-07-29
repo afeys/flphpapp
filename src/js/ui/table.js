@@ -1087,13 +1087,14 @@ export class FLTable extends FLBaseComponent {
   }
 
   /** Optimistic server persistence. Only runs when edit-url is set and the app
-   *  did NOT preventDefault the celledit event. Reverts + emits on failure. */
+   *  did NOT preventDefault the celledit event. Reverts + emits on failure.
+   *  Body shape mirrors the add row: the primary key plus a <field>: value pair
+   *  (e.g. id=6&name=New+name), rather than separate field/value keys. */
   _persistEdit(record, field, value, oldValue) {
     if (!this.editurl) return; // event-only mode: the app persists however it likes
     const body = new URLSearchParams();
     body.set(this.primarykeyfield, String(record[this.primarykeyfield]));
-    body.set('field', field);
-    body.set('value', value == null ? '' : String(value));
+    body.set(field, value == null ? '' : String(value)); // <fieldname>: <value>
     fetch(this.editurl, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
         .then((res) => { if (!res.ok) throw new Error('save failed'); })
         .catch(() => {

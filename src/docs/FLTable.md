@@ -454,9 +454,11 @@ changed).
 
 - If you `preventDefault()` the event → you own persistence; the table makes no
   request.
-- Else if `edit-url` is set → the table POSTs `{ <primarykeyfield>, field, value }`
-  form-encoded; on a non-OK response it reverts the record and cell and emits
-  `fl-table-editerror` → `{ recordid, field, value }`.
+- Else if `edit-url` is set → the table POSTs the primary key plus the changed
+  field as a `<fieldname>: value` pair, form-encoded (e.g. `id=6&name=New+name`)
+  — the same notation as the add row, just with the key included. On a non-OK
+  response it reverts the record and cell and emits `fl-table-editerror` →
+  `{ recordid, field, value }`.
 - Else (no `edit-url`, not prevented) → event-only; persist however you like.
 
 ---
