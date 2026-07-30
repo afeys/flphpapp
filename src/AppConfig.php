@@ -1,5 +1,5 @@
 <?php
-namespace Fl;
+namespace FL;
 use FL\Exceptions\ConfigException;
 
 set_time_limit(0);
